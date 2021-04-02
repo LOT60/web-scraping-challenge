@@ -1,5 +1,8 @@
-# web-scraping-challenge
+# Web Scraping Challenge
 Web Scraping Homework - Mission to Mars
+
+![mission_to_mars](https://user-images.githubusercontent.com/74845016/113380752-a88efd80-9342-11eb-8b01-70e4394dabf9.png)
+
 
 # Step 1 - Scraping
 Complete your initial scraping using Jupyter Notebook,     BeautifulSoup, Pandas, and Requests/Splinter.
@@ -39,3 +42,4 @@ Complete your initial scraping using Jupyter Notebook,     BeautifulSoup, Pandas
 * Append the dictionary with the image url string and the hemisphere title to a list. This list will contain one dictionary for each hemisphere.
 
 # Output
+<img width="586" alt="final_app" src="https://user-images.githubusercontent.com/74845016/113380818-d8d69c00-9342-11eb-80d7-b1b1b2086ad6.png">
