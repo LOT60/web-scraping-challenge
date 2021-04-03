@@ -77,10 +77,11 @@ def hemispheres():
 # Scrape
 def scrape():
     final_data = {}
-    final_data['mars_news'] = mars_news()
-    final_data['featured_img'] = featured_img()
+    output = mars_news()
+    final_data['mars_news'] = output()
+    final_data['mars_image'] = featured_img()
     final_data['mars_facts'] = mars_facts()
-    final_data['hemispheres'] = hemispheres()
+    final_data['mars_hemisphere'] = hemispheres()
 
     return final_data
 
