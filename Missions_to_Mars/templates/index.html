@@ -5,65 +5,84 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="stylesheet.css">
-  
-  
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/spacelab/bootstrap.min.css" integrity="sha384-F1AY0h4TrtJ8OCUQYOzhcFzUTxSOxuaaJ4BeagvyQL8N9mE4hrXjdDsNx249NpEc" crossorigin="anonymous">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
-    <title>Mission to Mars</title>
+  <title>Mission to Mars App</title>
+  <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 </head>
+
 <body>
-    <div class="container">
-
+  <div class="container-fluid">
+    <div class="row m-3" style ="background-color: rgb(146, 141, 141);"> 
         <div class="jumbotron text-center">
-          <h1>Mission to Mars</h1>
-          <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+           <br>
+              <h1>Mission to Mars</h1>
+                <br>
+                    <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
         </div>
+    </div>
+  </div>
+
+    <div class="container-fluid">
+        <!-- Row 2 -->
+        <div class="row m-3">
+            <br><br>
+            <h2 class="font-weight-bolder">Latest Mars News</h2>
+            <h4 class="font-weight-bolder">{{mars_news.news_title}}</h4>
+            <p>{{mars_news.news_p}}</p>
+        </div>
+    </div>
+
     
-        <div class="row" id="mars-news">
-          <div class="col-md-12">
-              <h3>Latest Mars News</h3>
-                <h4>{{mars.mars_news}}</h4>
-                    
-          </div>
-        </div>
-
-        <div class ="row" id="mars-image">
-            <div class = "col-md-8">
-                <h3>Featured Mars Image</h3>
-                <img src = "{{mars.mars_image}}" alt ="Mars Image">
+    <div class="container-fluid">
+        <div class="row m-3">
+            <!-- First Column-->
+            <div class="col-md-6 col-sm-9 col-xs-6 col-lg-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                      <h4 class="card-text font-weight-bolder">Featured Mars Image</h4>
+                    </div>                    
+                    <img src="{{mars_news.featured_image}}"  class='img-fluid h-100'  alt="featured mars image">                
+                </div>              
             </div>
-            <div class = "col-md-4">
-                    <h4>Mars Facts</h4>
-                    <p>{{mars.mars_facts | safe}}</p>
-                </div>
-        </div>
-        
-        <div class ="row" id="mars-hemispheres">
-            <div class = "col-md-12">
-                <h3><center>Mars Hemispheres</center></h3>
-
-                {% for hemisphere in mars.mars_hemisphere %}
-                    <div class = "col-md-6">
-                        <div class = "thumbnail">
-                            <img src = "{{hemisphere.img_url}}">
-                                <h3>{{hemisphere.title}}</h3>
-                            </div>
-                        </div>
-                {% endfor %}
+            <!-- Second Column-->            
+            <div class="col-md-6 col-sm-12 col-xs-6 col-lg-6 ps-lg-10 pt-xs-5" style="padding-left:60px;">
+                <div class="card h-100 border-0">
+                    <div class="card-body ">
+                      <h5 class="card-text font-weight-bolder">Mars Facts</h5>
                     </div>
-
-            
-            </div>
+                    <div class="card-body table table-responsive">                        
+                            {{mars_news.table | safe }}                         
+                    </div>
+                </div>                              
+            </div>            
         </div>
+    </div>
+
+    <br>
+    <div class="container-fluid">
+        <div class="row m-3">
+            <h2 class="text-center font-weight-bolder" style="font-family: Verdana;"> Mars Hemispheres</h2>
+            <hr>
+            <!--first column-->
+            {% for data in mars_news.hemisphere_urls %}  
+                <div class="col-md-3 col-sm-6 col-xs-12 col-lg-3">
+                    <div class='container'>
+                        <div class="card shadow" style='border:1px solid rgb(7, 12, 14);'>
+                            <img class="card-img-top img-fluid responsive"  width = '100%' src="{{ data.img_url }}" alt="Hemisphere image">
+                        
+                        <div class="card-body font-weight-bolder h5 " style="font-family: Georgia;"> 
+                            {{ data.title }}                         
+                        </div>
+                        </div>
+                    </div>
+                </div>            
+            {% endfor %}
         </div>
-
-        </div>
-
+    </div>
 
 
-      </div>
+
+
+
 </body>
 </html>
