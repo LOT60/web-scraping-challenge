@@ -23,7 +23,7 @@ def mars_news():
     url = 'https://redplanetscience.com/'
     
     # get soup
-    browser, soup = get_soup(nmn_url)
+    browser, soup = get_soup(url)
 
     # Retrieve news element
     news = soup.find('div', id='news')
@@ -45,7 +45,7 @@ def mars_news():
             news_p = newsa.select_one(".article_teaser_body").text.strip()
             
     # prepare output
-    news_dict = {'title':news_title,
+    news_dict = {'title':title,
                     'news_p':news_p}
 
     browser.quit()
@@ -66,20 +66,22 @@ def featured_img():
 
     return featured_image_url
 
+
 def mars_facts():
     mars_url = 'https://galaxyfacts-mars.com/'
     # using pandas read html
     tables = pd.read_html(mars_url)
-    len(tables)
-
     mars_fact_df = tables[0]
 
-    mars_fact_df.columns = ['Description' , 'Mars', 'Earth']
-    mars_fact_df.set_index('Description' , drop=True , inplace= True)
-    
-    mars_fact_df = df.to_dict()
-    
-    return mars_fact_df
+
+    mars_fact_df.columns = ['','Mars', 'Earth']
+    mars_fact_df = mars_fact_df.iloc[1:]
+    mars_fact_df.set_index('', drop=True , inplace= True)
+
+    facts = mars_fact_df.to_dict()
+
+    return facts
+
 
 def hemispheres():
     hem_url = 'https://marshemispheres.com/'
@@ -94,7 +96,7 @@ def hemispheres():
     for item in items:
         hmsphere = {}
         name = item.h3.text
-        link = item.a['href']
+      # link = item.a['href']
 
     # get full image
         try:
@@ -117,6 +119,7 @@ def hemispheres():
     browser.quit()
 
     return hemisphere_urls
+
 
 def scrape():
 
