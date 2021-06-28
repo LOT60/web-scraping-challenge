@@ -1,136 +1,111 @@
 import pandas as pd
-from splinter import Browser
-from bs4 import BeautifulSoup as bs
 from webdriver_manager.chrome import ChromeDriverManager
-import datetime as dt
+from splinter import Browser
+from bs4 import BeautifulSoup
+from webdriver_manager.chrome import ChromeDriverManager
 
-def get_soup(url):
-    # Initialize Browser
+# define the function to return srapped values
+
+def scrape():
+    # Setup splinter
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
 
-    browser.visit(url)
+    # Define url  and set up config splinter to the site 
+    #Create a function that takes the url and return the soup 
+    def create_soup(url):
+        browser.visit(url)
+        # Create BeautifulSoup object; parse with 'html.parser'
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+        return soup
 
-    html = browser.html
-
-    soup = bs(html, 'html.parser')
-
-    return browser, soup
-
-
-def mars_news():
-    # set url
-    url = 'https://redplanetscience.com/'
     
-    # get soup
-    browser, soup = get_soup(url)
 
-    # Retrieve news element
-    news = soup.find('div', id='news')
+    url = 'https://redplanetscience.com/'
+    soup = create_soup(url)
 
-    # get all list dates
-    list_dates = news.find_all('div', class_='list_date')
+    title = soup.find('div' , class_="content_title").text
 
-    maxdate = max([dt.datetime.strptime(ldate.text.strip(), '%B %d, %Y') for ldate in list_dates])
+    news_p = soup.find('div', class_="article_teaser_body").text
 
-    # get articles
-    articles = news.find_all('div', class_='list_text')
-
-    for article in articles:
-        list_date = article.select_one(".list_date").text.strip()
-
-        if dt.datetime.strptime(list_date, '%B %d, %Y') == maxdate:
-            newsa = article
-            title = newsa.select_one(".content_title").text.strip()
-            news_p = newsa.select_one(".article_teaser_body").text.strip()
-            
-    # prepare output
     news_dict = {'title':title,
-                    'news_p':news_p}
+                'news_p':news_p}
 
-    browser.quit()
-
-    return news_dict
+    news_dict
 
 
-def featured_img():
     space_url = 'https://spaceimages-mars.com/'
-    browser, soup = get_soup(space_url)
-
-     
-    featured_image = soup.find('img', class_='headerimage fade-in')
-
-    featured_image_url = space_url + featured_image['src']
-
-    browser.quit()
-
-    return featured_image_url
+    soup = create_soup(space_url)   
 
 
-def mars_facts():
+    try:
+        target = 'button[class="btn btn-outline-light"]'
+        browser.find_by_tag(target).click()
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+        image_src = soup.find('img', class_="fancybox-image")['src']
+
+    except:
+         print('can\'t find the image')    
+    featured_image_url = space_url + image_src   
+
+    featured_image_url 
+
+
     mars_url = 'https://galaxyfacts-mars.com/'
-    # using pandas read html
+   # using pandas read html
     tables = pd.read_html(mars_url)
-    mars_fact_df = tables[0]
+    mars_fact_df = tables[0] 
 
-
-    mars_fact_df.columns = ['','Mars', 'Earth']
+    mars_fact_df.columns = ['Description','Mars', 'Earth']
     mars_fact_df = mars_fact_df.iloc[1:]
-    mars_fact_df.set_index('', drop=True , inplace= True)
+    mars_fact_df.set_index('Description', drop=True , inplace= True)
 
-    facts = mars_fact_df.to_dict()
-
-    return facts
+    mars_fact_df.head() 
 
 
-def hemispheres():
+
+    # set url
     hem_url = 'https://marshemispheres.com/'
-    browser, soup = get_soup(hem_url)
+    soup = create_soup(hem_url)
 # get soup
-
-
     items = soup.find_all('div', class_="item")
-
     hemisphere_urls = []
 
     for item in items:
         hmsphere = {}
         name = item.h3.text
-      # link = item.a['href']
+#       link = item.a['href']
 
     # get full image
         try:
-            browser.links.find_by_partial_text(name).click()
-            print(browser.url)
-            html2 = browser.html
-            imgsoup = bs(html2, 'html.parser')
-            imgsoup
-            img = imgsoup.find('img', class_="wide-image")
+             browser.links.find_by_partial_text(name).click()
+             print(browser.url)
+             html2 = browser.html
+             imgsoup = BeautifulSoup(html2, 'html.parser')
+             imgsoup
+             img = imgsoup.find('img', class_="wide-image")
         
-            hmsphere['title'] = name[:-9]
-            hmsphere['img_url'] = hem_url + img['src']
-            
+             hmsphere['title'] = name[:-9]
+             hmsphere['img_url'] = hem_url + img['src']
+          
         except:
-            print("Could not get Image Link")   
+             print("Could not get Image Link")   
         
         hemisphere_urls.append(hmsphere)    
         browser.back()
 
     browser.quit()
 
-    return hemisphere_urls
+    print(hemisphere_urls)   
 
+    mars_data = {
+                'news_title' : title,
+                'news_p':news_p,
+                'featured_image':featured_image_url,
+                'hemisphere_image_urls':hemisphere_urls,
+                'table': mars_fact_df
+                 }
 
-def scrape():
-
-    results = {}
-
-    results['news'] = mars_news()
-
-    results['featured_img'] = featured_img()
-
-    results['mars_facts'] = mars_facts()
-
-    results['hemispheres'] = hemispheres()
-
-    return results
+    return mars_data   
